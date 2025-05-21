@@ -1,19 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
-  <title>Banco Nexus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexus Banca</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <h1>Banco Nexus</h1>
 
-  <form id="deposito-form">
-    <input type="text" name="cuenta" placeholder="Número de cuenta" required />
-    <input type="number" name="monto" placeholder="Monto a depositar" required />
-    <button type="submit">Depositar</button>
-  </form>
+<body>
+  <h1>Nexus Banca - Clientes</h1>
+
+  <section>
+    <h2>Clientes</h2>
+    <button id="btnCargar">Cargar Clientes</button>
+    <ul id="listaClientes"></ul>
+  </section>
+
+  <section>
+    <h2>Crear Cuenta</h2>
+    <form id="formCuenta">
+      <label>ID Cliente:</label>
+      <input type="text" id="clienteId" required />
+      <label>Tipo de Cuenta:</label>
+      <select id="tipoCuenta">
+        <option value="ahorros">Ahorros</option>
+        <option value="corriente">Corriente</option>
+      </select>
+      <label>Número de Cuenta:</label>
+      <input type="text" id="numeroCuenta" required />
+      <button type="submit">Crear Cuenta</button>
+    </form>
+  </section>
 
   <script src="app.js"></script>
 </body>
+
 </html>

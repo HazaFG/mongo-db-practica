@@ -1,4 +1,31 @@
 body {
-  font-family: sans-serif;
-  padding: 20px;
+  font-family: Arial, sans-serif;
+  margin: 2rem;
+  background-color: #f4f4f4;
+}
+
+h1 {
+  color: #333;
+}
+
+section {
+  background: white;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+input,
+select,
+button {
+  margin-top: 0.2rem;
+  padding: 0.4rem;
+  width: 100%;
+  box-sizing: border-box;
 }
