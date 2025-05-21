@@ -1,39 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nexus Banca</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Banco Nexus</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 1em;
+    }
+    h1 {
+      text-align: center;
+      color: #4a90e2;
+    }
+    input, button {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 0.5em;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-consultar { background-color: #4a90e2; }
+    .btn-depositar { background-color: #27ae60; }
+    .btn-retirar { background-color: #c0392b; }
+    .resultado {
+      background: #f0f0f0;
+      padding: 1em;
+      border-radius: 8px;
+      margin-top: 1em;
+    }
+  </style>
 </head>
-
 <body>
-  <h1>Nexus Banca - Clientes</h1>
+  <h1>Banco Nexus</h1>
 
-  <section>
-    <h2>Clientes</h2>
-    <button id="btnCargar">Cargar Clientes</button>
-    <ul id="listaClientes"></ul>
-  </section>
+  <div>
+    <input type="number" id="cuentaInput" placeholder="Número de cuenta" />
+    <button class="btn-consultar" onclick="consultarCuenta()">Consultar cuenta</button>
+  </div>
 
-  <section>
-    <h2>Crear Cuenta</h2>
-    <form id="formCuenta">
-      <label>ID Cliente:</label>
-      <input type="text" id="clienteId" required />
-      <label>Tipo de Cuenta:</label>
-      <select id="tipoCuenta">
-        <option value="ahorros">Ahorros</option>
-        <option value="corriente">Corriente</option>
-      </select>
-      <label>Número de Cuenta:</label>
-      <input type="text" id="numeroCuenta" required />
-      <button type="submit">Crear Cuenta</button>
-    </form>
-  </section>
+  <div id="resultado"></div>
+
+  <div style="margin-top: 2em;">
+    <h3>Operaciones Bancarias</h3>
+    <input type="number" id="montoInput" placeholder="Monto" />
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-depositar" onclick="realizarOperacion('deposito')">Depositar</button>
+      <button class="btn-retirar" onclick="realizarOperacion('retiro')">Retirar</button>
+    </div>
+  </div>
+
+  <p id="mensaje" style="margin-top: 1em;"></p>
 
   <script src="app.js"></script>
 </body>
-
 </html>
+

@@ -1,32 +1,82 @@
-const API_URL = 'http://localhost:3000/api';
+let datos = null;
 
-document.getElementById('btnCargar').addEventListener('click', async () => {
-  const res = await fetch(`${API_URL}/clientes`);
-  const clientes = await res.json();
+function mostrarMensaje(msg, esError = false) {
+  const mensaje = document.getElementById('mensaje');
+  mensaje.textContent = msg;
+  mensaje.style.color = esError ? 'red' : 'green';
+}
 
-  const ul = document.getElementById('listaClientes');
-  ul.innerHTML = '';
-  clientes.forEach(c => {
-    const li = document.createElement('li');
-    li.textContent = `${c.nombre} (${c.email})`;
-    ul.appendChild(li);
-  });
-});
+async function consultarCuenta() {
+  const cuenta = document.getElementById('cuentaInput').value;
+  if (!cuenta) {
+    mostrarMensaje('Ingresa un número de cuenta.', true);
+    return;
+  }
 
-document.getElementById('formCuenta').addEventListener('submit', async (e) => {
-  e.preventDefault();
+  try {
+    const res = await fetch(`http://localhost:3000/api/cuenta/${cuenta}`);
+    const json = await res.json();
 
-  const cliente_id = document.getElementById('clienteId').value;
-  const tipo = document.getElementById('tipoCuenta').value;
-  const numeroCuenta = document.getElementById('numeroCuenta').value;
+    if (json.error) {
+      mostrarMensaje(json.error, true);
+      datos = null;
+      document.getElementById('resultado').innerHTML = '';
+    } else {
+      datos = json;
+      mostrarMensaje('');
+      mostrarDatos();
+    }
+  } catch (err) {
+    console.error(err);
+    mostrarMensaje('Error al consultar la cuenta.', true);
+  }
+}
 
-  const res = await fetch(`${API_URL}/cuentas`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cliente_id, tipo, numeroCuenta })
-  });
+function mostrarDatos() {
+  const contenedor = document.getElementById('resultado');
+  if (!datos) return;
 
-  const data = await res.json();
-  alert(`✅ Cuenta creada: ${data.numeroCuenta}`);
-});
+  const transacciones = datos.transacciones.map(t => {
+    const fecha = new Date(t.fecha).toLocaleDateString();
+    return `<li>${t.tipo} de $${t.monto} el ${fecha}</li>`;
+  }).join('');
+
+  contenedor.innerHTML = `
+    <div class="resultado">
+      <p><strong>Nombre:</strong> ${datos.nombre}</p>
+      <p><strong>Saldo:</strong> $${datos.saldo.toFixed(2)}</p>
+      <h4>Movimientos:</h4>
+      <ul>${transacciones}</ul>
+    </div>
+  `;
+}
+
+async function realizarOperacion(tipo) {
+  const cuenta = document.getElementById('cuentaInput').value;
+  const monto = document.getElementById('montoInput').value;
+
+  if (!cuenta || !monto) {
+    mostrarMensaje('Debes ingresar un número de cuenta y un monto válido.', true);
+    return;
+  }
+
+  const url = tipo === 'deposito' ? '/api/deposito' : '/api/retiro';
+  try {
+    const res = await fetch(`http://localhost:3000${url}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cuentaId: parseInt(cuenta),
+        monto: parseFloat(monto)
+      })
+    });
+
+    const data = await res.json();
+    mostrarMensaje(data.mensaje || data.error, !!data.error);
+    consultarCuenta(); // refrescar datos
+  } catch (err) {
+    console.error(err);
+    mostrarMensaje('Error en la operación.', true);
+  }
+}
 

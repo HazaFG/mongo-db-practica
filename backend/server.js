@@ -2,58 +2,109 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const { Cliente, Cuenta, Transaccion } = require('../scripts/esquemas');
-
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-// Conexión a MongoDB
 mongoose.connect('mongodb://localhost:27017/nexus_banca')
-  .then(() => console.log('✅ Conectado a MongoDB desde backend'))
-  .catch(err => console.error('❌ Error al conectar:', err));
+  .then(() => console.log('Conectado a MongoDB'))
+  .catch(err => console.error('Error conectando a MongoDB:', err));
 
-// Rutas básicas
+const Cuenta = mongoose.model('Cuenta', new mongoose.Schema({
+  _id: Number,
+  idCliente: Number,
+  saldo: Number
+}));
 
-// Obtener todos los clientes
-app.get('/api/clientes', async (req, res) => {
-  const clientes = await Cliente.find();
-  res.json(clientes);
-});
+const Cliente = mongoose.model('Cliente', new mongoose.Schema({
+  _id: Number,
+  nombre: String,
+  curp: String
+}));
 
-// Crear cuenta para un cliente
-app.post('/api/cuentas', async (req, res) => {
-  const { cliente_id, tipo, numeroCuenta } = req.body;
-  const cuenta = new Cuenta({ cliente_id, tipo, numeroCuenta, saldo: 0 });
-  await cuenta.save();
-  res.json(cuenta);
-});
+const Transaccion = mongoose.model('Transaccion', new mongoose.Schema({
+  idCuenta: Number,
+  tipo: String,
+  monto: Number,
+  fecha: Date
+}));
 
-// Hacer una transacción (deposito o retiro)
-app.post('/api/transacciones', async (req, res) => {
-  const { cuenta_id, tipo, monto } = req.body;
+//GET Consultar cuenta
+app.get('/api/cuenta/:cuenta', async (req, res) => {
+  try {
+    const cuentaId = parseInt(req.params.cuenta);
+    const cuenta = await Cuenta.findById(cuentaId);
+    if (!cuenta) return res.status(404).json({ error: 'Cuenta no encontrada' });
 
-  const cuenta = await Cuenta.findById(cuenta_id);
-  if (!cuenta) return res.status(404).send('Cuenta no encontrada');
+    const cliente = await Cliente.findById(cuenta.idCliente);
+    const transacciones = await Transaccion.find({ idCuenta: cuentaId });
 
-  if (tipo === 'deposito') {
-    cuenta.saldo += monto;
-  } else if (tipo === 'retiro') {
-    if (cuenta.saldo < monto) return res.status(400).send('Fondos insuficientes');
-    cuenta.saldo -= monto;
+    res.json({
+      nombre: cliente?.nombre ?? "Desconocido",
+      saldo: cuenta.saldo,
+      transacciones
+    });
+  } catch (err) {
+    console.error('Error en /api/cuenta:', err);
+    res.status(500).json({ error: 'Error interno en el servidor' });
   }
-
-  await cuenta.save();
-
-  const transaccion = new Transaccion({ cuenta_id, tipo, monto });
-  await transaccion.save();
-
-  res.json({ cuenta, transaccion });
 });
 
-// Iniciar servidor
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor escuchando en http://localhost:${PORT}`);
+//POST Realizar deposito
+app.post('/api/deposito', async (req, res) => {
+  const { cuentaId, monto } = req.body;
+
+  try {
+    const cuenta = await Cuenta.findById(cuentaId);
+    if (!cuenta) return res.status(404).json({ error: 'Cuenta no encontrada' });
+
+    cuenta.saldo += monto;
+    await cuenta.save();
+
+    await Transaccion.create({
+      idCuenta: cuentaId,
+      tipo: 'deposito',
+      monto,
+      fecha: new Date()
+    });
+
+    res.json({ mensaje: 'Depósito exitoso', nuevoSaldo: cuenta.saldo });
+  } catch (err) {
+    console.error('Error en /api/deposito:', err);
+    res.status(500).json({ error: 'Error al realizar el depósito' });
+  }
+});
+
+//POST Realizar retiro
+app.post('/api/retiro', async (req, res) => {
+  const { cuentaId, monto } = req.body;
+
+  try {
+    const cuenta = await Cuenta.findById(cuentaId);
+    if (!cuenta) return res.status(404).json({ error: 'Cuenta no encontrada' });
+
+    if (cuenta.saldo < monto) {
+      return res.status(400).json({ error: 'Fondos insuficientes' });
+    }
+
+    cuenta.saldo -= monto;
+    await cuenta.save();
+
+    await Transaccion.create({
+      idCuenta: cuentaId,
+      tipo: 'retiro',
+      monto,
+      fecha: new Date()
+    });
+
+    res.json({ mensaje: 'Retiro exitoso', nuevoSaldo: cuenta.saldo });
+  } catch (err) {
+    console.error('Error en /api/retiro:', err);
+    res.status(500).json({ error: 'Error al realizar el retiro' });
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Backend escuchando en http://localhost:3000');
 });
 
