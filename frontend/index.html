@@ -4,58 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Banco Nexus</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 1em;
-    }
-    h1 {
-      text-align: center;
-      color: #4a90e2;
-    }
-    input, button {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 0.5em;
-    }
-    button {
-      border: none;
-      cursor: pointer;
-      color: white;
-    }
-    .btn-consultar { background-color: #4a90e2; }
-    .btn-depositar { background-color: #27ae60; }
-    .btn-retirar { background-color: #c0392b; }
-    .resultado {
-      background: #f0f0f0;
-      padding: 1em;
-      border-radius: 8px;
-      margin-top: 1em;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Banco Nexus</h1>
 
-  <div>
+  <div class="form-section">
     <input type="number" id="cuentaInput" placeholder="Número de cuenta" />
-    <button class="btn-consultar" onclick="consultarCuenta()">Consultar cuenta</button>
+    <button class="btn btn-consultar" onclick="consultarCuenta()">Consultar cuenta</button>
   </div>
 
-  <div id="resultado"></div>
+  <div id="resultado" class="resultado"></div>
 
-  <div style="margin-top: 2em;">
+  <div class="form-section">
     <h3>Operaciones Bancarias</h3>
     <input type="number" id="montoInput" placeholder="Monto" />
-    <div style="display: flex; gap: 10px;">
-      <button class="btn-depositar" onclick="realizarOperacion('deposito')">Depositar</button>
-      <button class="btn-retirar" onclick="realizarOperacion('retiro')">Retirar</button>
+    <div class="botones-operaciones">
+      <button class="btn btn-depositar" onclick="realizarOperacion('deposito')">Depositar</button>
+      <button class="btn btn-retirar" onclick="realizarOperacion('retiro')">Retirar</button>
     </div>
   </div>
 
-  <p id="mensaje" style="margin-top: 1em;"></p>
+  <p id="mensaje"></p>
 
   <script src="app.js"></script>
 </body>

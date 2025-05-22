@@ -19,25 +19,25 @@ async function run() {
 
     // Insertar clientes
     await clientes.insertMany([ 
-        { _id: 1, nombre: 'Andrea Lucero', curp: 'LUTA030907MBSCRNA6' },
-        { _id: 2, nombre: 'Alan Martin', curp: 'AUMA031209HBSGZLA3' },
-        { _id: 3, nombre: 'Miguel Angel', curp: 'LAOM030604HDFZRGA4' }
+        { _id: 1, nombre: 'Hazael Flores Gastelum', curp: 'FOGH030HBSLSZA5' },
+        { _id: 2, nombre: 'Agustin Abaroa', curp: 'PEMJ950312HDFRRN03' },
+        { _id: 3, nombre: 'Ricardo Garayzar', curp: 'LAOM030604HDFZRGA4' }
     ]);
 
-    // Insertar cuentas
+    // Insertar cuentas con nuevos IDs y montos
     await cuentas.insertMany([
-      { _id: 101, idCliente: 1, saldo: 5000 },
-      { _id: 102, idCliente: 2, saldo: 8000 }
+      { _id: 201, idCliente: 1, saldo: 15000 },
+      { _id: 202, idCliente: 2, saldo: 20000 }
     ]);
 
-    // Insertar transacciones
+    // Insertar transacciones con los nuevos IDs y montos
     await transacciones.insertMany([
-      { idCuenta: 101, tipo: 'deposito', monto: 1000, fecha: new Date() },
-      { idCuenta: 101, tipo: 'retiro', monto: 500, fecha: new Date() },
-      { idCuenta: 102, tipo: 'deposito', monto: 3000, fecha: new Date() }
+      { idCuenta: 201, tipo: 'deposito', monto: 2500, fecha: new Date() },
+      { idCuenta: 201, tipo: 'retiro', monto: 1200, fecha: new Date() },
+      { idCuenta: 202, tipo: 'deposito', monto: 4500, fecha: new Date() }
     ]);
 
-    console.log('Clientes, cuentas y transacciones insertados correctamente.');
+    console.log('Datos insertados correctamente');
   } catch (error) {
     console.error('Error insertando los datos:', error);
   } finally {

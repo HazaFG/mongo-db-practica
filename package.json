@@ -4,5 +4,23 @@
     "express": "^5.1.0",
     "mongodb": "^6.16.0",
     "mongoose": "^8.15.0"
-  }
+  },
+  "name": "mongo-db-practica",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HazaFG/mongo-db-practica.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HazaFG/mongo-db-practica/issues"
+  },
+  "homepage": "https://github.com/HazaFG/mongo-db-practica#readme",
+  "description": ""
 }
