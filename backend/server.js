@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://localhost:27017/nexus_banca')
+mongoose.connect('mongodb://127.0.0.1:27017/nexus_banca')
   .then(() => console.log('Conectado a MongoDB'))
   .catch(err => console.error('Error conectando a MongoDB:', err));
 
